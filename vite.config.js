@@ -5,15 +5,14 @@ export default defineConfig({
   plugins: [react()],
   base: '/tweet-binder-analyzer/',
   build: {
-    rollupOptions: {
-      output: {
-        entryFileNames: `assets/[name].js`,
-        chunkFileNames: `assets/[name].js`,
-        assetFileNames: `assets/[name].[ext]`
-      }
-    }
+    outDir: 'dist',
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom']
   },
   esbuild: {
-    jsxInject: `import React from 'react'`
+    loader: "jsx",
+    include: /src\/.*\.jsx?$/,
+    exclude: []
   }
 })
