@@ -28,3 +28,4 @@ jobs:
         with:
           folder: dist
           branch: gh-pages
+          clean: true # Elimina archivos antiguos
