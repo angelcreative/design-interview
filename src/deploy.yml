@@ -18,7 +18,7 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
-        run: npm ci # Usa npm ci en lugar de npm install
+        run: npm ci
 
       - name: Build
         run: npm run build
@@ -28,4 +28,5 @@ jobs:
         with:
           folder: dist
           branch: gh-pages
-          clean: true
+          clean-exclude: |
+            .nojekyll
