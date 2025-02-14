@@ -23,12 +23,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Copy index.html
-        run: cp index.html dist/
-
-      - name: Add .nojekyll
-        run: touch dist/.nojekyll
-
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
