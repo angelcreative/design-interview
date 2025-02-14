@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import OpenAI from 'openai';
+import { marked } from 'marked';
 
 function App() {
   const [url, setUrl] = useState('');
@@ -104,21 +105,17 @@ function App() {
 
 On the other hand, we will look at the engagement of the report that is determined by the following metrics within stats - general:
 
-- receivedRetweets: these are the RTs received by the report tweets. They do not have to match the “retweets ” field because the “retweets ” field includes only the public retweets in the report, the rest of the retweets may be from private twitter accounts, or are outside the date range of the report or have even been deleted. The more receivedRetweets the better, that means engagement is high.
+- receivedRetweets: these are the RTs received by the report tweets. They do not have to match the "retweets " field because the "retweets " field includes only the public retweets in the report, the rest of the retweets may be from private twitter accounts, or are outside the date range of the report or have even been deleted. The more receivedRetweets the better, that means engagement is high.
 - Favorites: these are the likes received by the report tweets. The more likes the better.
 - Quotes: these are the quotes received by the report tweets. The more quotes the better.
 - Bookmarks: these are the Bookmarks received by the report tweets. The more Bookmarks the better. The number of bookmarks is usually very low compared to that of likes and RTs
-- totalReplies: these are the replies received by the report's tweets. It is important not to confuse them with the field “replies ” which are the replies that are within the report. That is, “replies ” refers to the number of replies that contain the query analyzed in the report, a hashtag, a keyword, etc. The totalReplies field refers to the number of replies that the report tweets have received, the total Replies do not affect the impact of the report unless they contain the analyzed query.
+- totalReplies: these are the replies received by the report's tweets. It is important not to confuse them with the field "replies " which are the replies that are within the report. That is, "replies " refers to the number of replies that contain the query analyzed in the report, a hashtag, a keyword, etc. The totalReplies field refers to the number of replies that the report tweets have received, the total Replies do not affect the impact of the report unless they contain the analyzed query.
 
 Your experience includes:
 - Advanced engagement analysis and interaction metrics
 - Evaluation of the scope and impact of campaigns
 - Interpretation of social media KPIs
-- Performance benchmarking on social networks
-
-Do not use markdown in the response, use plain text. if possible, use bullet points and html markup. like <ul> <li> <p> <h4> <h3> <h2> <h1>
-
-`
+- Performance benchmarking on social networks`
 
           },
           {
@@ -177,15 +174,39 @@ Do not use markdown in the response, use plain text. if possible, use bullet poi
         <head>
           <title>Tweet Binder Analysis</title>
           <style>
-            body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
-            h1 { color: #00A2F3; }
+            body { 
+              font-family: Arial, sans-serif; 
+              padding: 20px; 
+              line-height: 1.6;
+              color: #333;
+            }
+            h1 { color: #3981f7; margin-bottom: 1.5rem; }
+            h2 { color: #2d6ad9; margin-top: 2rem; }
+            h3 { color: #333; margin-top: 1.5rem; }
+            ul { padding-left: 1.5rem; }
+            li { margin-bottom: 0.5rem; }
             .date { color: #666; font-size: 0.9em; margin-top: 20px; }
+            .container { max-width: 800px; margin: 0 auto; }
+            blockquote {
+              border-left: 4px solid #3981f7;
+              margin: 1.5em 0;
+              padding: 0.5em 1em;
+              background: #f8f9fa;
+            }
+            code {
+              background: #f1f1f1;
+              padding: 0.2em 0.4em;
+              border-radius: 3px;
+              font-size: 0.9em;
+            }
           </style>
         </head>
         <body>
-          <h1>Engagement and Exposure Analysis</h1>
-          ${analysis.split('\n').map(p => `<p>${p}</p>`).join('')}
-          <div class="date">Generated on ${new Date().toLocaleDateString()}</div>
+          <div class="container">
+            <h1>Tweet Binder Analysis Report</h1>
+            ${marked(analysis, { breaks: true })}
+            <div class="date">Generated on ${new Date().toLocaleDateString()}</div>
+          </div>
         </body>
       </html>
     `);
