@@ -6,5 +6,11 @@ export default defineConfig({
   base: '/tweet-binder-analyzer/',
   build: {
     outDir: 'dist',
+    assetsDir: 'assets',
+    rollupOptions: {
+      input: {
+        main: './index.html',
+      },
+    },
   }
 })
