@@ -114,7 +114,12 @@ Your experience includes:
 - Advanced engagement analysis and interaction metrics
 - Evaluation of the scope and impact of campaigns
 - Interpretation of social media KPIs
-- Performance benchmarking on social networks`
+- Performance benchmarking on social networks
+
+Do not use markdown in the response, use plain text. if possible, use bullet points and html markup. like <ul> <li> <p> <h4> <h3> <h2> <h1>
+
+`
+
           },
           {
             role: "user",
