@@ -218,7 +218,7 @@ Do not use markdown in the response, use plain text. if possible, use bullet poi
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <label htmlFor="url" className="block text-sm font-medium text-gray-700 flex items-center">
-                <span className="material-icons-outlined text-blue-500 mr-2 text-xl">link</span>
+              <span class="material-icons">link</span>
                 Report URL
               </label>
               <div className="relative">
