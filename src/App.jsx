@@ -12,6 +12,11 @@ function App() {
   const [analysis, setAnalysis] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
+  const [showChat, setShowChat] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [isChatLoading, setIsChatLoading] = useState(false);
+  const chatRef = useRef(null);
 
   const loadingMessages = [
     "Connecting to Twitter/X API...",
@@ -105,11 +110,11 @@ function App() {
 
 For other purposes, we have information about the involvement of the information that determines the metrics of the stats - general:
 
-- receivedRetweets: estos son los RTs recibidos por los tweets del informe. No tienen por qué coincidir con el campo “retweets” porque el campo “retweets” incluye sólo los retweets públicos que hay en el informe, puede que el resto de retweets sean de cuentas de twitter privadas, o estén fuera del rango de fecha del informe or se hayan incluso eliminated. Cuantos more receivedRetweets more, it is significant that the engagement is high.
+- receivedRetweets: estos son los RTs recibidos por los tweets del informe. No tienen por qué coincidir con el campo "retweets" porque el campo "retweets" incluye sólo los retweets públicos que hay en el informe, puede que el resto de retweets sean de cuentas de twitter privadas, o estén fuera del rango de fecha del informe or se hayan incluso eliminated. Cuantos more receivedRetweets more, it is significant that the engagement is high.
 - Favorites: these are the likes received by the tweets from the information. Cuantos more likes more.
 - Quotes: these are the quotes recibidos por los tweets del informe. Cuantos more quotes are better.
 - Bookmarks: these are the Bookmarks recibidos por los tweets del informe. Cuantos more Bookmarks more. The number of bookmarks is very important in comparison with the likes and RTs
-- totalReplies: these are the replies received from the tweets of the informe. It is important not to confuse with the field “replies” that the replies have to be informed. It decides, “replies” has referencia al número de replies que los tweets del informe han recibido, los totalReplies no afectan al impacto del informe a no ser que contengan la query analizada.
+- totalReplies: these are the replies received from the tweets of the informe. It is important not to confuse with the field "replies" that the replies have to be informed. It decides, "replies" has referencia al número de replies que los tweets del informe han recibido, los totalReplies no afectan al impacto del informe a no ser que contengan la query analizada.
 
 Your experience includes:
 - Análisis advanced engagement and metrics of interaction
@@ -226,6 +231,45 @@ Your experience includes:
     printWindow.document.close();
     printWindow.print();
     setShowMenu(false);
+  };
+
+  // Función para manejar el envío de mensajes al chat
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!newMessage.trim()) return;
+
+    const userMessage = newMessage.trim();
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setNewMessage('');
+    setIsChatLoading(true);
+
+    try {
+      const completion = await openai.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content: `You are a helpful AI assistant analyzing a Tweet Binder report. The current report shows the following data: ${JSON.stringify(analysis, null, 2)}`
+          },
+          ...messages,
+          { role: "user", content: userMessage }
+        ],
+        model: "gpt-4",
+        temperature: 0.7,
+      });
+
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: completion.choices[0].message.content 
+      }]);
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: 'Sorry, I encountered an error. Please try again.' 
+      }]);
+    } finally {
+      setIsChatLoading(false);
+    }
   };
 
   return (
@@ -410,6 +454,87 @@ Your experience includes:
             </div>
           )}
         </div>
+
+        {analysis && (
+          <>
+            {/* Botón flotante */}
+            <button
+              onClick={() => setShowChat(true)}
+              className="fixed bottom-6 right-6 flex items-center gap-2 px-4 py-3 bg-[#3981f7] hover:bg-[#2d6ad9] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 z-50"
+            >
+              <span className="material-icons">auto_awesome</span>
+              Ask AI
+            </button>
+
+            {/* Sideout del chat */}
+            <div className={`fixed top-0 right-0 h-full w-96 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${showChat ? 'translate-x-0' : 'translate-x-full'}`}>
+              <div className="flex flex-col h-full">
+                {/* Header del chat */}
+                <div className="p-4 border-b flex justify-between items-center bg-[#e8f3fe]">
+                  <h3 className="text-lg font-semibold text-[#3981f7] flex items-center gap-2">
+                    <span className="material-icons">auto_awesome</span>
+                    AI Chat Assistant
+                  </h3>
+                  <button
+                    onClick={() => setShowChat(false)}
+                    className="p-2 hover:bg-[#d8e9fd] rounded-full transition-colors"
+                  >
+                    <span className="material-icons text-[#3981f7]">close</span>
+                  </button>
+                </div>
+
+                {/* Área de mensajes */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-4" ref={chatRef}>
+                  {messages.map((message, index) => (
+                    <div
+                      key={index}
+                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div className={`max-w-[80%] p-3 rounded-lg ${
+                        message.role === 'user' 
+                          ? 'bg-[#3981f7] text-white rounded-br-none'
+                          : 'bg-[#e8f3fe] text-gray-800 rounded-bl-none'
+                      }`}>
+                        {message.content}
+                      </div>
+                    </div>
+                  ))}
+                  {isChatLoading && (
+                    <div className="flex justify-start">
+                      <div className="bg-[#e8f3fe] text-gray-800 p-3 rounded-lg rounded-bl-none">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-[#3981f7] rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-[#3981f7] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          <div className="w-2 h-2 bg-[#3981f7] rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Formulario de entrada */}
+                <form onSubmit={handleSendMessage} className="p-4 border-t bg-white">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder="Ask something about the report..."
+                      className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3981f7] focus:border-transparent"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isChatLoading || !newMessage.trim()}
+                      className="p-2 bg-[#3981f7] text-white rounded-lg hover:bg-[#2d6ad9] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <span className="material-icons">send</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
