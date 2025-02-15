@@ -121,12 +121,6 @@ Your experience includes:
             
             TITLE: Start with "Ai agent analysis"
             
-            SECTIONS:
-            1. Engagement Level Rating (High/Medium/Low)
-            2. Engagement Metrics (list the key metrics without markdown symbols)
-            3. Real vs Potential Impressions Analysis
-            4. Sentiment Analysis
-            5. Key Conclusions
             
             FORMATTING RULES:
             - Do not use markdown symbols (*, #, -, etc.)
@@ -135,19 +129,7 @@ Your experience includes:
             - Use UPPERCASE for section titles
             - Use parentheses for additional context
             
-            Example format:
-            
-            ENGAGEMENT AND EXPOSURE ANALYSIS
-            
-            ENGAGEMENT LEVEL RATING: Medium
-            
-            ENGAGEMENT METRICS:
-            1. Received Retweets: 13,421
-            2. Favorites: 108,139
-            (etc...)
-            
-            ANALYSIS:
-            The engagement metrics show...`
+            `
           },
           {
             role: "user",
