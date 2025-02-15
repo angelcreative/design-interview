@@ -477,9 +477,9 @@ Your experience includes:
                   </h3>
                   <button
                     onClick={() => setShowChat(false)}
-                    className="p-2 hover:bg-[#d8e9fd] rounded-full transition-colors"
+                    className="text-[#3981f7] hover:text-[#2d6ad9] transition-colors"
                   >
-                    <span className="material-icons text-[#3981f7]">close</span>
+                    <span className="material-icons">close</span>
                   </button>
                 </div>
 
@@ -520,7 +520,9 @@ Your experience includes:
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder="Ask something about the report..."
-                      className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3981f7] focus:border-transparent"
+                      className="flex-1 px-4 py-2 bg-white border border-gray-200 rounded-lg 
+                        text-gray-700 placeholder-gray-400
+                        focus:outline-none focus:ring-2 focus:ring-[#3981f7] focus:border-transparent"
                     />
                     <button
                       type="submit"
